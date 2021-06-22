@@ -11,6 +11,8 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 
 # Ignore all but files copied by Dockerfile
+# Ignore Everything
 *
-!target/*/release/zenohd
-!target/*/release/*.so
+# Except the target directory
+!target/**
+
