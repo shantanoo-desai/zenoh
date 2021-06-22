@@ -72,10 +72,7 @@ jobs:
           command: build
           use-cross: ${{ matrix.use_cross }}
           args: --target ${{ matrix.target }} --release
-      
-      # Assuming `cross build --release --target ${TARGET} is successful
-      # and the generated binaries are available in target/${TARGET}/release/ 
-      
+      - run: pwd && ls -hla
       - name: Build and Push Image
         id: docker_build
         uses: docker/build-push-action@v2
