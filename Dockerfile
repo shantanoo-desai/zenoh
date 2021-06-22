@@ -9,25 +9,20 @@
 #
 # Contributors:
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
+#   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-###
-### Dockerfile running the Eclipse zenoh router (zenohd)
-###
-# To build this Docker image:
-#   - Build zenoh using the adlinktech/zenoh-dev-x86_64-unknown-linux-musl docker image:
-#       docker run --init --rm -v $(pwd):/workdir -w /workdir adlinktech/zenoh-dev-x86_64-unknown-linux-musl cargo build --release --bins --lib --examples
-#   - Then build this Docker image:
-#       docker build -t eclipse/zenoh .
-#
-# To run this Docker image:
-#    docker run --init -p 7447:7447/tcp -p 7447:7447/udp -p 8000:8000/tcp eclipse/zenoh
+FROM alpine:3.12
 
-FROM alpine:latest
+ARG TARGETPLATFORM
+RUN case "$TARGETPLATFORM" in \
+    "linux/arm64") echo aarch64-unknown-linux-gnu > /rust_target.txt ;; \
+    *) exit 1 ;; \
+    esac
 
 RUN apk add --no-cache libgcc libstdc++
 
-COPY target/x86_64-unknown-linux-musl/release/zenohd /
-COPY target/x86_64-unknown-linux-musl/release/*.so /
+COPY target/$(cat /rust_target.txt)/release/zenohd /
+COPY target/$(cat /rust_target.txt)/release/*.so /
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
