@@ -30,8 +30,8 @@ RUN case "$TARGETPLATFORM" in \
 
 WORKDIR /app
 
-RUN cp target/$(TARGET_DIR)/release/zenohd .
-RUN cp target/$(TARGET_DIR)/release/*.so .
+RUN cp target/${TARGET_DIR}/release/zenohd .
+RUN cp target/${TARGET_DIR}/release/*.so .
 
 FROM base as release
 COPY --from=tiny-zenoh /app/* ./
