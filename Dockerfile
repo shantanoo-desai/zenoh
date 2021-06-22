@@ -23,8 +23,8 @@ RUN apk add --no-cache libgcc libstdc++
 
 RUN ls -la
 
-COPY target/$(cat /rust_target.txt)/release/zenohd /
-COPY target/$(cat /rust_target.txt)/release/*.so /
+COPY ./target/$(cat /rust_target.txt)/release/zenohd /
+COPY ./target/$(cat /rust_target.txt)/release/*.so /
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
