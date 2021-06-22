@@ -11,7 +11,7 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM alpine:3.12
+FROM alpine:latest
 
 ARG TARGETPLATFORM
 RUN case "$TARGETPLATFORM" in \
