@@ -82,7 +82,7 @@ jobs:
           context: .
           platforms: linux/arm64
           push: true
-          tag: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       
