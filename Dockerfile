@@ -15,8 +15,8 @@ FROM alpine:latest as release
 
 RUN apk add --no-cache libgcc libstdc++
 
-COPY ./zenohd /
-COPY ./*.so /
+COPY zenohd /
+COPY *.so /
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
