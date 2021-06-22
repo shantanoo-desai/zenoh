@@ -15,16 +15,14 @@ FROM alpine:3.12
 
 ARG TARGETPLATFORM
 RUN case "$TARGETPLATFORM" in \
-    "linux/arm64") echo aarch64-unknown-linux-gnu > /rust_target.txt ;; \
+    "linux/arm64") echo aarch64-unknown-linux-gnu /tmp/rust_target.txt ;; \
     *) exit 1 ;; \
     esac
 
 RUN apk add --no-cache libgcc libstdc++
 
-RUN ls -la
-
-COPY ./target/$(cat /rust_target.txt)/release/zenohd /
-COPY ./target/$(cat /rust_target.txt)/release/*.so /
+COPY ./target/aarch64-unknown-linux-gnu/release/zenohd /
+COPY ./target/aarch64-unknown-linux-gnu/release/*.so /
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
