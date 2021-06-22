@@ -21,7 +21,9 @@ RUN case "$TARGETPLATFORM" in \
 
 RUN apk add --no-cache libgcc libstdc++
 
-RUN cp ./target/`cat /tmp/rust_target.txt`/release/zenohd /
+ARG TARGETDIR
+ENV TARGETDIR=$(cat /tmp/rust_target.txt)
+RUN cp ./target/$TARGETDIR/release/zenohd /
 RUN cp ./target/`cat /tmp/rust_target.txt`/release/*.so /
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
