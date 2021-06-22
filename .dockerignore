@@ -14,5 +14,6 @@
 # Ignore Everything
 *
 # Except the target directory
-!target/**
+!zenohd
+!*.so
 
