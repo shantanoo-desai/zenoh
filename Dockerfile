@@ -23,15 +23,15 @@ ARG TARGETPLATFORM
 
 # translating Docker's TARGETPLATFORM into zenoh architecture target directory paths
 RUN case "$TARGETPLATFORM" in \
-    "linux/amd64")  TARGET_DIR=x86_64-unknown-linux-musl  ;; \
-    "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
+    "linux/amd64")  export TARGET_DIR=x86_64-unknown-linux-musl  ;; \
+    "linux/arm64")  export TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
     *) exit 1 ;; \
     esac
 
 WORKDIR /app
 
-RUN cp target/${TARGET_DIR}/release/zenohd .
-RUN cp target/${TARGET_DIR}/release/*.so .
+RUN cp target/$(echo $TARGET_DIR)/release/zenohd .
+RUN cp target/$(echo $TARGET_DIR)/release/*.so .
 
 FROM base as release
 COPY --from=tiny-zenoh /app/* ./
