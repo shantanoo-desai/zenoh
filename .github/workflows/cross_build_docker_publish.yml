@@ -72,8 +72,9 @@ jobs:
           command: build
           use-cross: ${{ matrix.use_cross }}
           args: --target ${{ matrix.target }} --release
-      - run: cp target/${{ matrix.target }}/release/zenohd zenohd
+      - run: cp target/${{ matrix.target }}/release/zenohd .
       - run: cp target/${{ matrix.target }}/release/*.so .
+      - run: ls -la 
       - name: Build and Push Image
         id: docker_build
         uses: docker/build-push-action@v2
