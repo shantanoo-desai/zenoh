@@ -11,20 +11,32 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM alpine:latest
+FROM alpine:latest as base
 
+# default to the build platforms image, and not the target platform image
+# since this is a temp image stage, we should avoid qemu for the binary download
+# and only pull the alpine image once
+FROM --platform=${BUILDPLATFORM} alpine as tiny-zenoh
+
+# Use BuildKit to help translate architecture names
 ARG TARGETPLATFORM
+
+# translating Docker's TARGETPLATFORM into zenoh architecture target directory paths
 RUN case "$TARGETPLATFORM" in \
-    "linux/arm64") echo aarch64-unknown-linux-gnu /tmp/rust_target.txt ;; \
+    "linux/amd64")  TARGET_DIR=x86_64-unknown-linux-musl  ;; \
+    "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
     *) exit 1 ;; \
     esac
 
-RUN apk add --no-cache libgcc libstdc++ bash
+WORKDIR /app
 
-RUN cp target/$(cat /tmp/rust_target.txt)/release/zenohd /
-RUN cp target/$(cat /tmp/rust_target.txt)/release/*.so /
+RUN cp target/$(TARGET_DIR)/release/zenohd .
+RUN cp target/$(TARGET_DIR)/release/*.so .
 
-RUN echo '#!/bin/bash' > /entrypoint.sh
+FROM base as release
+COPY --from=tiny-zenoh /app/* ./
+
+RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
 RUN echo 'exec /zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
