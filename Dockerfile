@@ -19,14 +19,12 @@ RUN case "$TARGETPLATFORM" in \
     *) exit 1 ;; \
     esac
 
-RUN apk add --no-cache libgcc libstdc++
+RUN apk add --no-cache libgcc libstdc++ bash
 
-ARG TARGETDIR
-ENV TARGETDIR=$(cat /tmp/rust_target.txt)
-RUN cp ./target/$TARGETDIR/release/zenohd /
-RUN cp ./target/`cat /tmp/rust_target.txt`/release/*.so /
+RUN cp target/$(cat /tmp/rust_target.txt)/release/zenohd /
+RUN cp target/$(cat /tmp/rust_target.txt)/release/*.so /
 
-RUN echo '#!/bin/ash' > /entrypoint.sh
+RUN echo '#!/bin/bash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
 RUN echo 'exec /zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
