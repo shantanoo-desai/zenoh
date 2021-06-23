@@ -36,12 +36,8 @@ WORKDIR /app
 COPY --from=tiny-project /app/zenohd ./
 COPY --from=tiny-project /app/*.so ./
 
-RUN apk add --no-cache libgcc libstdc++
+RUN apk add --no-cache libgcc libstdc++ tini
 
-RUN echo '#!/bin/ash' > /entrypoint.sh
-RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec /zenohd $*' >> /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
@@ -50,4 +46,6 @@ EXPOSE 8000/tcp
 ENV RUST_LOG=info
 ENV RUST_BACKTRACE=full
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--"]
+
+CMD ["/app/zenohd"]
