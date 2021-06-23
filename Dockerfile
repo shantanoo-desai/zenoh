@@ -13,6 +13,8 @@
 
 FROM alpine as base
 
+COPY target target
+
 FROM --platform=${BUILDPLATFORM} alpine as tiny-project
 
 # Use BuildKit to help translate architecture names
