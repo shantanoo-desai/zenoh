@@ -81,6 +81,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           context: .
+          target: release
           platforms: linux/arm64
           push: true
           tags: ${{ steps.prep.outputs.tags }}
