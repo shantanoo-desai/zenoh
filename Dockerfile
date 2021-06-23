@@ -13,7 +13,9 @@
 
 FROM alpine as base
 
-COPY target target
+COPY target/ target/
+
+RUN pwd && ls -la
 
 FROM --platform=${BUILDPLATFORM} alpine as tiny-project
 
@@ -26,7 +28,7 @@ RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac; \
-    ls -la target/ \
+    pwd && ls -la \
     cp target/$TARGET_DIR/release/zenohd .; \
     cp target/$TARGET_DIR/release/*.so .
 
