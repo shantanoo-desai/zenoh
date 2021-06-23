@@ -11,12 +11,28 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM alpine:latest as release
+FROM alpine as base
+
+FROM --platform=${BUILDPLATFORM} alpine as tiny-project
+
+# Use BuildKit to help translate architecture names
+ARG TARGETPLATFORM
+
+WORKDIR /app
+
+RUN case ${TARGETPLATFORM} in \
+         "linux/amd64")  TARGET_DIR=x86_64-unknown-linux-musl  ;; \
+         "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
+         *) exit 1 ;; \
+    esac; \
+    cp target/$TARGET_DIR/release/zenohd .; \
+    cp target/$TARGET_DIR/release/*.so .
+
+
+FROM base as release
+COPY --from=tiny-project /app/* ./
 
 RUN apk add --no-cache libgcc libstdc++
-
-COPY zenohd /
-COPY *.so /
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
