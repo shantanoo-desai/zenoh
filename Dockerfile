@@ -13,14 +13,12 @@
 
 FROM alpine as base
 
-COPY target/ target/
-
-RUN pwd && ls -la
-
 FROM --platform=${BUILDPLATFORM} alpine as tiny-project
 
 # Use BuildKit to help translate architecture names
 ARG TARGETPLATFORM
+
+COPY target/ /tmp/target/
 
 WORKDIR /app
 
@@ -28,9 +26,8 @@ RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac; \
-    pwd && ls -la \
-    cp target/$TARGET_DIR/release/zenohd .; \
-    cp target/$TARGET_DIR/release/*.so .
+    cp /tmp/target/$TARGET_DIR/release/zenohd . \
+    cp /tmp/target/$TARGET_DIR/release/*.so .
 
 
 FROM base as release
