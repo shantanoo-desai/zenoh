@@ -31,7 +31,7 @@ FROM alpine:latest
 COPY --from=tiny-project /zenohd /
 COPY --from=tiny-project /*.so /
 
-RUN ls -hla /app/
+
 
 RUN apk add --no-cache libgcc libstdc++
 
