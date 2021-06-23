@@ -31,11 +31,6 @@ RUN case "${TARGETPLATFORM}" in \
 FROM base as release
 
 COPY --from=zenoh-binary /home/* /usr/local/bin/
-RUN echo '#!/bin/ash' > /entrypoint.sh
-RUN echo 'ls -la /usr/local/bin/' >> entrypoint.sh
-RUN echo 'echo " * Starting: /usr/local/bin/zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec /usr/local/bin/zenohd $*' >> /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
@@ -45,3 +40,5 @@ ENV RUST_LOG info
 ENV RUST_BACKTRACE full
 
 ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/local/bin/zenohd"]
