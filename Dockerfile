@@ -20,8 +20,6 @@ ARG TARGETPLATFORM
 
 COPY target/ /tmp/target/
 
-RUN ls -la /tmp/target/
-
 WORKDIR /app
 
 RUN case "${TARGETPLATFORM}" in \
@@ -33,19 +31,24 @@ RUN case "${TARGETPLATFORM}" in \
 
 
 FROM base as release
+
+WORKDIR /app
 COPY --from=tiny-project /app/* /
+
+RUN ls -la /app/
 
 RUN apk add --no-cache libgcc libstdc++
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
-RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec /zenohd $*' >> /entrypoint.sh
+RUN echo 'echo " * Starting: /app/zenohd $*"' >> /entrypoint.sh
+RUN echo 'exec /app/zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
 EXPOSE 8000/tcp
 
-ENV RUST_LOG info
+ENV RUST_LOG=info
+ENV RUST_BACKTRACE=full
 
 ENTRYPOINT ["/entrypoint.sh"]
