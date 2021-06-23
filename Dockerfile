@@ -20,14 +20,16 @@ ARG TARGETPLATFORM
 
 COPY target/ /tmp/target/
 
+RUN ls -la /tmp/target/
+
 WORKDIR /app
 
 RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac; \
-    cp /tmp/target/$TARGET_DIR/release/zenohd . \
-    cp /tmp/target/$TARGET_DIR/release/*.so .
+    mv /tmp/target/$TARGET_DIR/release/zenohd .; \
+    mv /tmp/target/$TARGET_DIR/release/*.so .
 
 
 FROM base as release
