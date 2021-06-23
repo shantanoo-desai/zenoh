@@ -29,7 +29,7 @@ RUN case "${TARGETPLATFORM}" in \
 FROM base as release
 
 COPY --from=zenoh-binary /home/* /usr/local/bin/
-RUN apk add --no-cache libstdc++ libc6-compat libgcc
+RUN apk add --no-cache libstdc++ libc6-compat libgcc musl-dev
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
 EXPOSE 8000/tcp
