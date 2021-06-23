@@ -11,8 +11,6 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM alpine as base
-
 FROM --platform=${BUILDPLATFORM} alpine as tiny-project
 
 # Use BuildKit to help translate architecture names
@@ -20,24 +18,27 @@ ARG TARGETPLATFORM
 
 COPY target/ /tmp/target/
 
-WORKDIR /app
-
 RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac; \
-    mv /tmp/target/$TARGET_DIR/release/zenohd .; \
-    mv /tmp/target/$TARGET_DIR/release/*.so .
+    mv /tmp/target/$TARGET_DIR/release/zenohd /; \
+    mv /tmp/target/$TARGET_DIR/release/*.so /
 
 
-FROM base as release
+FROM alpine:latest
 
-WORKDIR /app
-COPY --from=tiny-project /app/zenohd ./
-COPY --from=tiny-project /app/*.so ./
+COPY --from=tiny-project /zenohd /
+COPY --from=tiny-project /*.so /
 
-RUN apk add --no-cache libgcc libstdc++ tini
+RUN ls -hla /app/
 
+RUN apk add --no-cache libgcc libstdc++
+
+RUN echo '#!/bin/ash' > /entrypoint.sh
+RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
+RUN echo 'exec /zenohd $*' >> /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
@@ -46,6 +47,4 @@ EXPOSE 8000/tcp
 ENV RUST_LOG=info
 ENV RUST_BACKTRACE=full
 
-ENTRYPOINT ["/sbin/tini", "--"]
-
-CMD ["/app/zenohd"]
+ENTRYPOINT ["/entrypoint.sh"]
