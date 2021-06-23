@@ -11,10 +11,11 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM alpine:latest
+FROM alpine:latest as base
 
 RUN apk add --no-cache libgcc libstdc++
 
+FROM --platform=${BUILDPLATFORM} alpine as zenoh-binary
 # Use BuildKit to help translate architecture names
 ARG TARGETPLATFORM
 
@@ -23,13 +24,17 @@ COPY target/ /tmp/target/
 RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
-    esac; \
-    mv /tmp/target/$TARGET_DIR/release/zenohd /; \
-    mv /tmp/target/$TARGET_DIR/release/*.so /
+    esac \
+    && mv /tmp/target/$TARGET_DIR/release/zenohd /zenoh \
+    && mv /tmp/target/$TARGET_DIR/release/*.so /zenoh
 
+FROM base as release
+
+COPY --from=zenoh-binary /zenoh /usr/local/bin/
 RUN echo '#!/bin/ash' > /entrypoint.sh
-RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec /zenohd $*' >> /entrypoint.sh
+RUN echo 'ls -la /usr/local/bin/' >> entrypoint.sh
+RUN echo 'echo " * Starting: /usr/bin/zenohd $*"' >> /entrypoint.sh
+RUN echo 'exec /user/bin/zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
