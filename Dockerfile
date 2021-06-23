@@ -20,7 +20,7 @@ ARG TARGETPLATFORM
 
 WORKDIR /app
 
-RUN case ${TARGETPLATFORM} in \
+RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac; \
@@ -30,13 +30,13 @@ RUN case ${TARGETPLATFORM} in \
 
 
 FROM base as release
-COPY --from=tiny-project /app/* ./
+COPY --from=tiny-project /app/* /
 
 RUN apk add --no-cache libgcc libstdc++
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec ./zenohd $*' >> /entrypoint.sh
+RUN echo 'exec /zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
