@@ -13,8 +13,6 @@
 
 FROM alpine:latest as base
 
-RUN apk add --no-cache libgcc libstdc++
-
 FROM --platform=${BUILDPLATFORM} alpine as zenoh-binary
 # Use BuildKit to help translate architecture names
 ARG TARGETPLATFORM
@@ -31,7 +29,7 @@ RUN case "${TARGETPLATFORM}" in \
 FROM base as release
 
 COPY --from=zenoh-binary /home/* /usr/local/bin/
-
+RUN apk add --no-cache libstdc++ libc6-compat libgcc
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
 EXPOSE 8000/tcp
