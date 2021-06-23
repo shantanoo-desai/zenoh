@@ -21,10 +21,10 @@ ARG TARGETPLATFORM
 WORKDIR /app
 
 RUN case ${TARGETPLATFORM} in \
-         "linux/amd64")  TARGET_DIR=x86_64-unknown-linux-musl  ;; \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac; \
+    ls -la target/ \
     cp target/$TARGET_DIR/release/zenohd .; \
     cp target/$TARGET_DIR/release/*.so .
 
@@ -36,7 +36,7 @@ RUN apk add --no-cache libgcc libstdc++
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec /zenohd $*' >> /entrypoint.sh
+RUN echo 'exec ./zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
