@@ -11,7 +11,9 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM --platform=${BUILDPLATFORM} alpine as tiny-project
+FROM alpine:latest
+
+RUN apk add --no-cache libgcc libstdc++
 
 # Use BuildKit to help translate architecture names
 ARG TARGETPLATFORM
@@ -25,16 +27,6 @@ RUN case "${TARGETPLATFORM}" in \
     mv /tmp/target/$TARGET_DIR/release/zenohd /; \
     mv /tmp/target/$TARGET_DIR/release/*.so /
 
-
-FROM alpine:latest
-
-COPY --from=tiny-project /zenohd /
-COPY --from=tiny-project /*.so /
-
-
-
-RUN apk add --no-cache libgcc libstdc++
-
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
 RUN echo 'exec /zenohd $*' >> /entrypoint.sh
@@ -44,7 +36,7 @@ EXPOSE 7447/udp
 EXPOSE 7447/tcp
 EXPOSE 8000/tcp
 
-ENV RUST_LOG=info
-ENV RUST_BACKTRACE=full
+ENV RUST_LOG info
+ENV RUST_BACKTRACE full
 
 ENTRYPOINT ["/entrypoint.sh"]
