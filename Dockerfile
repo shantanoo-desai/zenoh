@@ -45,4 +45,4 @@ RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["/usr/local/bin/zenohd"]
+CMD ["zenohd"]
