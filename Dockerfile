@@ -25,12 +25,12 @@ RUN case "${TARGETPLATFORM}" in \
          "linux/arm64")  TARGET_DIR=aarch64-unknown-linux-gnu  ;; \
          *) exit 1 ;; \
     esac \
-    && mv /tmp/target/$TARGET_DIR/release/zenohd /zenoh \
-    && mv /tmp/target/$TARGET_DIR/release/*.so /zenoh
+    && mv /tmp/target/$TARGET_DIR/release/zenohd /home \
+    && mv /tmp/target/$TARGET_DIR/release/*.so /home
 
 FROM base as release
 
-COPY --from=zenoh-binary /zenoh /usr/local/bin/
+COPY --from=zenoh-binary /home /usr/local/bin/
 RUN echo '#!/bin/ash' > /entrypoint.sh
 RUN echo 'ls -la /usr/local/bin/' >> entrypoint.sh
 RUN echo 'echo " * Starting: /usr/bin/zenohd $*"' >> /entrypoint.sh
