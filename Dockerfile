@@ -33,15 +33,14 @@ RUN case "${TARGETPLATFORM}" in \
 FROM base as release
 
 WORKDIR /app
-COPY --from=tiny-project /app/* /
-
-RUN ls -la /app/
+COPY --from=tiny-project /app/zenohd ./
+COPY --from=tiny-project /app/*.so ./
 
 RUN apk add --no-cache libgcc libstdc++
 
 RUN echo '#!/bin/ash' > /entrypoint.sh
-RUN echo 'echo " * Starting: /app/zenohd $*"' >> /entrypoint.sh
-RUN echo 'exec /app/zenohd $*' >> /entrypoint.sh
+RUN echo 'echo " * Starting: /zenohd $*"' >> /entrypoint.sh
+RUN echo 'exec /zenohd $*' >> /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 7447/udp
