@@ -11,7 +11,7 @@
 #   ADLINK zenoh team, <zenoh@adlink-labs.tech>
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
-FROM alpine:latest as base
+FROM debian:stable-slim as base
 
 FROM --platform=${BUILDPLATFORM} alpine as zenoh-binary
 # Use BuildKit to help translate architecture names
@@ -29,7 +29,7 @@ RUN case "${TARGETPLATFORM}" in \
 FROM base as release
 
 COPY --from=zenoh-binary /home/* /usr/local/bin/
-RUN apk add --no-cache libstdc++ libc6-compat libgcc musl-dev
+# RUN apk add --no-cache libstdc++ libc6-compat libgcc musl-dev
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
 EXPOSE 8000/tcp
