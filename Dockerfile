@@ -37,10 +37,10 @@ EXPOSE 8000/tcp
 ENV RUST_LOG info
 ENV RUST_BACKTRACE full
 
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
 
 CMD ["zenohd"]
