@@ -26,9 +26,9 @@ RUN case "${TARGETPLATFORM}" in \
     && mv /tmp/target/$TARGET_DIR/release/zenohd /home \
     && mv /tmp/target/$TARGET_DIR/release/*.so /home
 
-FROM alpine:latest as release
+FROM alpine:edge as release
 ENV GLIBC_REPO=https://github.com/sgerrand/alpine-pkg-glibc
-ENV GLIBC_VERSION=2.30-r0
+ENV GLIBC_VERSION=2.33-r0
 
 RUN set -ex && \
     apk --update add libc6-compat libgcc libstdc++ curl ca-certificates && \
