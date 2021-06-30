@@ -12,8 +12,6 @@
 #   Shantanoo 'Shan' Desai <shantanoo.desai@gmail.com>
 
 # FROM debian:stable-slim as base
-FROM alpine:edge as base
-RUN apk --update add --no-cache libstdc++ libgcc
 
 FROM --platform=${BUILDPLATFORM} alpine as zenoh-binary
 # Use BuildKit to help translate architecture names
@@ -28,9 +26,9 @@ RUN case "${TARGETPLATFORM}" in \
     && mv /tmp/target/$TARGET_DIR/release/zenohd /home \
     && mv /tmp/target/$TARGET_DIR/release/*.so /home
 
-FROM base AS release
-
-COPY --from=zenoh-binary /home/* /
+FROM alpine:latest as release
+RUN apk --update add --no-cache libstdc++ libgcc
+COPY --from=zenoh-binary /home/* /usr/bin/
 
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
@@ -45,4 +43,4 @@ RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-# CMD ["zenohd"]
+CMD ["zenohd"]
