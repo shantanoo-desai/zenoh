@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ash
 set -e
 
 if [ "${1:0:1}" = '-' ]; then
