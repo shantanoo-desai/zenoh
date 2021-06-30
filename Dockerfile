@@ -40,8 +40,6 @@ RUN set -ex && \
 
 COPY --from=zenoh-binary /home/* /usr/bin/
 
-WORKDIR /
-
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
 EXPOSE 8000/tcp
@@ -55,4 +53,4 @@ RUN chmod +x /usr/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
 
-CMD ["zenohd"]
+CMD ["/usr/bin/zenohd"]
