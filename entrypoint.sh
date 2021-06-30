@@ -1,8 +1,8 @@
-#!/bin/ash
-set -ex
+#!/bin/bash
+set -e
 
 if [ "${1:0:1}" = '-' ]; then
-    set -- /zenohd "$@"
+    set -- zenohd "$@"
 fi
 
 exec "$@"
