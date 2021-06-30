@@ -1,8 +1,9 @@
 #!/bin/sh
 set -e
+ls -la /usr/bin/
 
 if [ "${1:0:1}" = '-' ]; then
-    set -- zenohd "$@"
+    set -- /usr/bin/zenohd "$@"
 fi
 
 exec "$@"
