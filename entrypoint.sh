@@ -1,8 +1,9 @@
 #!/bin/ash
-set -e
+set -ex
 
 if [ "${1:0:1}" = '-' ]; then
-    set -- zenohd "$@"
+    ls -la /usr/local/bin/ ; ls -la /;
+    set -- /usr/local/bin/zenohd "$@"
 fi
 
 exec "$@"
