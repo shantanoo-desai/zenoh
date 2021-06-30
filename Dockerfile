@@ -38,7 +38,7 @@ RUN set -ex && \
     rm -v /tmp/*.apk && \
     /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib
 
-COPY --from=zenoh-binary /home/* /usr/bin/
+COPY --from=zenoh-binary --chmod=777 /home/* /usr/bin/
 
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
@@ -47,9 +47,9 @@ EXPOSE 8000/tcp
 ENV RUST_LOG info
 ENV RUST_BACKTRACE full
 
-COPY entrypoint.sh /usr/bin/
+COPY --chmod=755 entrypoint.sh /usr/bin/
 
-RUN chmod +x /usr/bin/entrypoint.sh
+# RUN chmod +x /usr/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
 
