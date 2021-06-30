@@ -27,9 +27,9 @@ RUN case "${TARGETPLATFORM}" in \
     && mv /tmp/target/$TARGET_DIR/release/zenohd /home \
     && mv /tmp/target/$TARGET_DIR/release/*.so /home
 
-FROM base as release
+FROM base AS release
 
-COPY --from=zenoh-binary /home/* /usr/local/bin/
+COPY --from=zenoh-binary /home/* /
 RUN apk --update add --no-cache libstdc++ libgcc
 EXPOSE 7447/udp
 EXPOSE 7447/tcp
@@ -38,9 +38,9 @@ EXPOSE 8000/tcp
 ENV RUST_LOG info
 ENV RUST_BACKTRACE full
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
 
